@@ -13,6 +13,7 @@ import java.util.List;
 /**
  * @author iceflow
  * @date 2018/8/1
+ * 上传控制层
  */
 @RestController
 @RequestMapping("images")

@@ -1,8 +1,8 @@
 package cn.sibat.iceflow.image.server.controller.interceptor;
 
-import cn.sibat.iceflow.image.server.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 @Component
 public class CorsFilter implements Filter {
-    private static final String[] origins={"http://localhost:9502","http://192.168.40.126:9502"};
+    private static final String[] origins={"http://localhost:9502","http://192.168.40.126:9502","http://58.251.157.179:60400"};
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -37,7 +37,7 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Credentials");
         response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
-        response.setHeader("Content-Type", Constants.APPLICATION_JSON_UTF8);
+        //response.setHeader("Content-Type", Constants.APPLICATION_JSON_UTF8);
         chain.doFilter(req, res);
     }
 

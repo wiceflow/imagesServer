@@ -2,7 +2,7 @@ package cn.sibat.iceflow.image.server.thread;
 
 import cn.sibat.iceflow.image.server.controller.exception.RRException;
 import cn.sibat.iceflow.image.server.util.Constants;
-import cn.sibat.iceflow.image.server.util.ImageCheck;
+import cn.sibat.iceflow.image.server.util.DateUtil;
 import cn.sibat.iceflow.image.server.vo.ImageVO;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -69,10 +70,12 @@ public class UploadThreadCallable implements Callable<ImageVO> {
         String suffix = imageFile.getOriginalFilename().split("\\.")[1];
         // 利用MD5生成Hash值做主键  对于重复文件则不再上传  -- TODO 下一个版本
         // String fileName = MD5Util.MD5.md5HashCode32(imageFile.getInputStream()) + Constants.DOT_SEPARATOR + suffix;
+        // 日期文件夹   以每一个月为单位创建文件夹
+        String datePath = DateUtil.parseDateToString(new Date(),DateUtil.PATIERN_YYYYMM);
         // 利用UUID做主键
         String fileName = UUID.randomUUID() + Constants.DOT_SEPARATOR + suffix;
         // 文件路径
-        String filePath = imagePath + projectName + otherPath.toString() + File.separator + fileName;
+        String filePath = imagePath + projectName + File.separator + datePath + otherPath.toString() + File.separator + fileName;
         // 构建文件
         File file = new File(filePath);
         logger.info(file.getAbsolutePath());
@@ -81,11 +84,14 @@ public class UploadThreadCallable implements Callable<ImageVO> {
         // 先检查文件是否存在了，存在便不再上传 直接返回路径
         if (file.exists()) {
             logger.info("文件已存在，不再上传");
-        }else if (ImageCheck.IS_IMAGE.isImage(file)){
-            // 在写入文件时检查该文件是不是图片  最后不提示用户了  ↑
-            logger.error("上传了不是图片的文件");
-            return null;
-        }else {
+        }
+        //  不再限定为图片服务器 --  取消图片检查  ---------  2018/09/29  bf
+//        else if (ImageCheck.IS_IMAGE.isImage(file)){
+//            // 在写入文件时检查该文件是不是图片  最后不提示用户了  ↑
+//            logger.error("上传了不是图片的文件");
+//            throw new RRException("上传的文件不是图片");
+//        }
+        else {
             try {
                 // 0.common-io下的工具类:根据上传文件，实例化新的文件(file是字节文件，需转换) 自动关闭流
                 FileUtils.copyInputStreamToFile(imageFile.getInputStream(), file);
@@ -98,7 +104,7 @@ public class UploadThreadCallable implements Callable<ImageVO> {
         // 封装数据返回
         ImageVO imageVO = new ImageVO();
         imageVO.setName(imageFile.getOriginalFilename());
-        imageVO.setPath(projectName + otherPath.toString() + File.separator + fileName);
+        imageVO.setPath(projectName + File.separator + datePath + otherPath.toString() + File.separator + fileName);
         return imageVO;
     }
 
