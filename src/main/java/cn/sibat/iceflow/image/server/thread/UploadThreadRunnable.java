@@ -53,8 +53,8 @@ public class UploadThreadRunnable implements Runnable {
             // 0.common-io下的工具类:根据上传文件，实例化新的文件(file是字节文件，需转换) 自动关闭流
             FileUtils.copyInputStreamToFile(inputStream, file);
         } catch (IOException e) {
-            logger.error("文件存入失败");
             file.delete();
+            logger.error("文件存入失败");
             e.printStackTrace();
             throw new RRException("文件存入失败");
         }

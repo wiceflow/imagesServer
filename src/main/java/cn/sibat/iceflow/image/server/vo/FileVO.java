@@ -4,11 +4,11 @@ package cn.sibat.iceflow.image.server.vo;
  * @author iceflow
  * @date 2018/8/6
  */
-public class ImageVO {
+public class FileVO {
     private String name;
     private String path;
 
-    public ImageVO() {
+    public FileVO() {
     }
 
     public String getName() {
@@ -27,5 +27,11 @@ public class ImageVO {
         this.path = path;
     }
 
-
+    @Override
+    public String toString() {
+        return "FileVO{" +
+                "name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

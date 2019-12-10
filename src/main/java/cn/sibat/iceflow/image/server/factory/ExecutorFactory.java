@@ -20,11 +20,11 @@ public enum ExecutorFactory {
     private ExecutorService executorService;
 
     ExecutorFactory(){
-        final int maxPoolSize = 2000;
+        final int maxPoolSize = 50;
         // 线程创建工厂
         MyThreadFactory myThreadFactory = MyThreadFactory.MY_THREAD_FACTORY;
         // 定义并发执行服务
-        executorService = new ThreadPoolExecutor(50,maxPoolSize,200, TimeUnit.MILLISECONDS,
+        executorService = new ThreadPoolExecutor(10,maxPoolSize,200, TimeUnit.MILLISECONDS,
                 new SynchronousQueue<>(),myThreadFactory);
     }
 

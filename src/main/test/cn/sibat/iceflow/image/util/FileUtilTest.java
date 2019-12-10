@@ -12,10 +12,10 @@ public class FileUtilTest {
 
     @Test
     public void filePathTest(){
-        String filePath = "/home/ftpimages/www/images/";
-        File file = new File(filePath);
-
-        file.mkdirs();
-        System.out.println(file.getAbsolutePath());
+        String filePAth = "E:\\1.mp4";
+        File file = new File(filePAth);
+        if (file.exists()){
+            System.out.println("yes");
+        }
     }
 }

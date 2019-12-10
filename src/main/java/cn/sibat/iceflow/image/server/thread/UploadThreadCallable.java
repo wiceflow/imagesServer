@@ -3,7 +3,7 @@ package cn.sibat.iceflow.image.server.thread;
 import cn.sibat.iceflow.image.server.controller.exception.RRException;
 import cn.sibat.iceflow.image.server.util.Constants;
 import cn.sibat.iceflow.image.server.util.DateUtil;
-import cn.sibat.iceflow.image.server.vo.ImageVO;
+import cn.sibat.iceflow.image.server.vo.FileVO;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,11 @@ import java.util.concurrent.Callable;
  * @author iceflow
  * @date 2018/8/6
  *      图片上传线程Callable方法
+ *
+ *      因业务需求，这个不再是图片上传服务，而是文件上传  -- 2019-11-05  截止需要上传功能的有 图片、文件、视屏
+ *      断点续传功能可参考  https://blog.csdn.net/rainbow702/article/details/84014365
  */
-public class UploadThreadCallable implements Callable<ImageVO> {
+public class UploadThreadCallable implements Callable<FileVO> {
 
     private Logger logger = LoggerFactory.getLogger(UploadThreadCallable.class);
 
@@ -34,7 +37,7 @@ public class UploadThreadCallable implements Callable<ImageVO> {
     private String projectName;
 
     /**
-     * 图片保存路径
+     * 保存路径
      */
     private String imagePath;
 
@@ -57,7 +60,7 @@ public class UploadThreadCallable implements Callable<ImageVO> {
     }
 
     @Override
-    public final ImageVO call() throws Exception {
+    public final FileVO call() throws Exception {
         // 构建分级目录
         StringBuffer otherPath = new StringBuffer();
         if (structure != null && structure.size() != 0){
@@ -66,10 +69,18 @@ public class UploadThreadCallable implements Callable<ImageVO> {
                 otherPath = otherPath.append(File.separator).append(s);
             }
         }
+        if (imageFile.getOriginalFilename() == null){
+            throw new RRException("没有文件名不行啊");
+        }
         // 后缀
-        String suffix = imageFile.getOriginalFilename().split("\\.")[1];
+        String[] suffixs = imageFile.getOriginalFilename().split("\\.");
+        if (suffixs.length == 1){
+            throw new RRException("文件名不符合格式，请添加后缀或写入文件名");
+        }
+        String suffix = suffixs[suffixs.length - 1];
         // 利用MD5生成Hash值做主键  对于重复文件则不再上传  -- TODO 下一个版本
         // String fileName = MD5Util.MD5.md5HashCode32(imageFile.getInputStream()) + Constants.DOT_SEPARATOR + suffix;
+
         // 日期文件夹   以每一个月为单位创建文件夹
         String datePath = DateUtil.parseDateToString(new Date(),DateUtil.PATIERN_YYYYMM);
         // 利用UUID做主键
@@ -86,7 +97,7 @@ public class UploadThreadCallable implements Callable<ImageVO> {
             logger.info("文件已存在，不再上传");
         }
         //  不再限定为图片服务器 --  取消图片检查  ---------  2018/09/29  bf
-//        else if (ImageCheck.IS_IMAGE.isImage(file)){
+//        else if (FileCheck.IS_IMAGE.isImage(file)){
 //            // 在写入文件时检查该文件是不是图片  最后不提示用户了  ↑
 //            logger.error("上传了不是图片的文件");
 //            throw new RRException("上传的文件不是图片");
@@ -102,10 +113,10 @@ public class UploadThreadCallable implements Callable<ImageVO> {
             }
         }
         // 封装数据返回
-        ImageVO imageVO = new ImageVO();
-        imageVO.setName(imageFile.getOriginalFilename());
-        imageVO.setPath(projectName + File.separator + datePath + otherPath.toString() + File.separator + fileName);
-        return imageVO;
+        FileVO fileVO = new FileVO();
+        fileVO.setName(imageFile.getOriginalFilename());
+        fileVO.setPath(projectName + File.separator + datePath + otherPath.toString() + File.separator + fileName);
+        return fileVO;
     }
 
     /**

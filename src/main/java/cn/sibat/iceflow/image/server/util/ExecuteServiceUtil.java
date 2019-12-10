@@ -1,7 +1,7 @@
 package cn.sibat.iceflow.image.server.util;
 
 import cn.sibat.iceflow.image.server.factory.ExecutorFactory;
-import cn.sibat.iceflow.image.server.vo.ImageVO;
+import cn.sibat.iceflow.image.server.vo.FileVO;
 
 import java.util.concurrent.*;
 
@@ -35,8 +35,8 @@ public class ExecuteServiceUtil{
      * @throws ExecutionException
      * @throws TimeoutException
      */
-    public static ImageVO execute(Callable<ImageVO> task) throws InterruptedException, ExecutionException, TimeoutException {
-        Future<ImageVO> result = executorService.submit(task);
+    public static FileVO execute(Callable<FileVO> task) throws InterruptedException, ExecutionException, TimeoutException {
+        Future<FileVO> result = executorService.submit(task);
         return result.get(100, TimeUnit.SECONDS);
     }
 }

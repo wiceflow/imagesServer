@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
  *      检验方法是在window的cmd窗口中输入
  *      certutil -hashfile 文件路径 MD5
  */
-public enum  MD5Util {
+public enum MD5Util {
 
     /**
      * 获取MD5的值
@@ -59,10 +59,10 @@ public enum  MD5Util {
                 //解释参见最下方
                 int val = ((int) md5Byte) & 0xff;
                 if (val < 16) {
-                    /**
-                     * 如果小于16，那么val值的16进制形式必然为一位，
-                     * 因为十进制0,1...9,10,11,12,13,14,15 对应的 16进制为 0,1...9,a,b,c,d,e,f;
-                     * 此处高位补0。
+                    /*
+                      如果小于16，那么val值的16进制形式必然为一位，
+                      因为十进制0,1...9,10,11,12,13,14,15 对应的 16进制为 0,1...9,a,b,c,d,e,f;
+                      此处高位补0。
                      */
                     hexValue.append("0");
                 }

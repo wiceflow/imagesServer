@@ -9,5 +9,5 @@ import org.slf4j.LoggerFactory;
  *      控制层公共组件
  */
 public abstract class AbstractService {
-    protected Logger _looger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 }
