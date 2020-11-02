@@ -116,6 +116,12 @@
       <artifactId>spring-test</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <!-- 音频格式转换 -->
+    <dependency>
+      <groupId>com.github.dadiyang</groupId>
+      <artifactId>jave</artifactId>
+      <version>1.0.5</version>
+    </dependency>
     <!-- Redis客户端 -->
     <dependency>
       <groupId>redis.clients</groupId>
